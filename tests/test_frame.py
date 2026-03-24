@@ -8,6 +8,7 @@ import pytest
 from freezeframe.column import field
 from freezeframe.exceptions import FrozenFrameError, SchemaValidationError
 from freezeframe.frame import FrozenFrame
+from freezeframe.series import FrozenSeries
 
 # ---------------------------------------------------------------------------
 # Fixtures — reusable subclasses
@@ -208,14 +209,14 @@ class TestColumnAccess:
     def setup_method(self) -> None:
         self.df = UserMetrics.from_dict(SAMPLE_DATA)
 
-    def test_getitem_returns_array(self) -> None:
+    def test_getitem_returns_frozen_series(self) -> None:
         col = self.df["score"]
-        assert isinstance(col, pa.Array)
+        assert isinstance(col, FrozenSeries)
         assert col.to_pylist() == [9.1, 7.4, 8.8]
 
-    def test_getattr_returns_array(self) -> None:
+    def test_getattr_returns_frozen_series(self) -> None:
         col = self.df.score
-        assert isinstance(col, pa.Array)
+        assert isinstance(col, FrozenSeries)
         assert col.to_pylist() == [9.1, 7.4, 8.8]
 
     def test_getitem_missing_column_raises(self) -> None:
@@ -228,6 +229,7 @@ class TestColumnAccess:
 
     def test_nullable_column_values(self) -> None:
         col = self.df["active"]
+        assert isinstance(col, FrozenSeries)
         assert col.to_pylist() == [True, False, None]
 
 
