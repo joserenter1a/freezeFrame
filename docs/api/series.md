@@ -1,0 +1,3 @@
+# FrozenSeries
+
+::: freezeframe.series.FrozenSeries

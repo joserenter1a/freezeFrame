@@ -1,0 +1,3 @@
+# FrozenFrame
+
+::: freezeframe.frame.FrozenFrame
