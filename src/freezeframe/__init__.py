@@ -33,12 +33,14 @@ column documentation::
 from freezeframe.column import field, register_type
 from freezeframe.exceptions import FrozenFrameError, SchemaValidationError
 from freezeframe.frame import FrozenFrame
+from freezeframe.series import FrozenSeries
 
 __version__ = "0.1.0"
 
 __all__: list[str] = [
     "FrozenFrame",
     "FrozenFrameError",
+    "FrozenSeries",
     "SchemaValidationError",
     "__version__",
     "field",
