@@ -44,6 +44,7 @@ from freezeframe.column import field
 from freezeframe.exceptions import FrozenFrameError, SchemaValidationError
 from freezeframe.schema import build_schema
 from freezeframe.schema import validate as _validate_batch
+from freezeframe.series import FrozenSeries
 
 __all__: list[str] = ["FrozenFrame"]
 
@@ -106,6 +107,11 @@ class FrozenFrame(metaclass=FrozenFrameMeta):
     """
 
     __schema__: ClassVar[pa.Schema]
+
+    # Declared here so ty/mypy can resolve self._batch and self._hash_cache;
+    # both are set via object.__setattr__ to bypass our mutation guard.
+    _batch: pa.RecordBatch
+    _hash_cache: int
 
     # ------------------------------------------------------------------
     # Construction
@@ -262,20 +268,16 @@ class FrozenFrame(metaclass=FrozenFrameMeta):
     # Column access
     # ------------------------------------------------------------------
 
-    def __getitem__(self, key: str) -> pa.Array:
-        """Return the column ``key`` as a ``pa.Array``.
-
-        Will be upgraded to return ``FrozenSeries[T]`` when that class
-        is implemented.
-        """
+    def __getitem__(self, key: str) -> FrozenSeries:
+        """Return the column ``key`` as a ``FrozenSeries``."""
         schema = type(self).__schema__
         if key not in schema.names:
             raise KeyError(
                 f"Column '{key}' not found. Available columns: {schema.names}"
             )
-        return self._batch.column(key)
+        return FrozenSeries(self._batch.column(key))
 
-    def __getattr__(self, name: str) -> pa.Array:
+    def __getattr__(self, name: str) -> FrozenSeries:
         """Attribute-style column access: ``df.score``.
 
         Only called when normal attribute lookup fails, so internal
@@ -287,7 +289,7 @@ class FrozenFrame(metaclass=FrozenFrameMeta):
             raise AttributeError(name)
         schema = type(self).__schema__
         if name in schema.names:
-            return self._batch.column(name)
+            return FrozenSeries(self._batch.column(name))
         raise AttributeError(
             f"'{type(self).__name__}' has no attribute '{name}'. "
             f"Available columns: {schema.names}"
