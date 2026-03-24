@@ -34,6 +34,16 @@ This project uses [semantic versioning](https://semver.org/).
   - `__eq__`, `__len__`, `__iter__` (row-wise dicts), `__repr__`
 - 45 tests for `frame.py` covering metaclass schema compilation, construction, mutation guards, column access, iteration, equality, hashing, and repr
 - **`__init__.py`** — public API wired up: `FrozenFrame`, `field`, `register_type`, `FrozenFrameError`, `SchemaValidationError` all importable directly from `freezeframe`
+- **`series.py`** — Phase 1 implementation complete:
+  - `FrozenSeries[T]` wraps a `pa.Array` with a fully immutable interface
+  - `__len__`, `__iter__` (yields Python values; nulls become `None`), `__getitem__` (int → scalar, slice → new `FrozenSeries`)
+  - Comparison operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) via `pyarrow.compute` — return `pa.BooleanArray` masks for use with `filter()` in Phase 2
+  - `equals()` for value equality between two series (returns `bool`, null-aware)
+  - `to_pylist()`, `to_arrow()`, `type`, `null_count`, `__repr__`
+  - Explicitly `__hash__ = None` — unhashable by design since `__eq__` is element-wise
+- `FrozenFrame.__getitem__` and `__getattr__` updated to return `FrozenSeries` instead of `pa.Array`
+- `FrozenSeries` added to public API exports in `__init__.py`
+- 45 tests for `series.py` covering construction, immutability, sequence protocol, all six comparison operators (scalar and series operands), `equals()`, conversion helpers, and repr
 
 ---
 
