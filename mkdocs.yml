@@ -1,0 +1,90 @@
+site_name: freezeFrame
+site_description: Immutable, schema-typed DataFrames backed by Apache Arrow
+site_author: freezeFrame contributors
+repo_url: https://github.com/freezeframe/freezeframe
+repo_name: freezeframe/freezeframe
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            merge_init_into_class: true
+            separate_signature: true
+            signature_crossrefs: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quickstart: getting-started/quickstart.md
+  - User Guide:
+    - Defining Schemas: guide/schema.md
+    - Immutability: guide/immutability.md
+    - Functional Transforms: guide/transforms.md
+    - Null Handling: guide/nulls.md
+    - Ecosystem Interop: guide/interop.md
+  - API Reference:
+    - FrozenFrame: api/frame.md
+    - field(): api/field.md
+    - FrozenSeries: api/series.md
+    - Exceptions: api/exceptions.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
